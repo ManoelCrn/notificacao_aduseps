@@ -1,0 +1,193 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ADUSEPS | Notificação Extrajudicial</title>
+    <meta name="robots" content="noindex, nofollow">
+
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Archivo:wght@400;600&display=swap" rel="stylesheet">
+
+    <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+    <header class="header">
+        <div class="container header__container">
+            <div class="header__brand">
+                <img  class="header__logo" src="assets/logo.png" alt="Logo Aduseps">
+                <h1 class="header__title">
+                Notificação Extrajudicial
+            </h1>
+            </div>
+
+            <div class="header__actions">
+                <!--Botões futuros-->
+            </div>
+        </div>
+    </header>
+
+    <main class="main">
+        <div class="container">
+            <form class="form" id="formNotificacao">
+                <!--Dados do Notificado-->
+                <fieldset class="form__section">
+                    <legend class="form__legend">Dados do Notificado</legend>
+                    <div class="form__grid">
+                        <div class="form__group">
+                            <label for="genero" class="form__label">Gênero</label>
+                            <select id="genero" class="form__control" required>
+                                <option value="">Selecione</option>
+                                <option value="masculino">Masculino</option>
+                                <option value="feminino">Feminino</option>
+                            </select>
+                        </div>
+
+                        <div class="form__group form__group--full">
+                            <label for="nome" class="form__label">Nome Completo</label>
+                            <input type="text" id="nome" class="form__control" required>
+                        </div>
+
+                        <div class="form__group">
+                            <label for="cep" class="form__label">CEP</label>
+                            <input type="text" id="cep" class="form__control">
+                        </div>
+
+                        <div class="form__group form__group--full">
+                            <label for="rua" class="form__label">Rua</label>
+                            <input type="text" id="rua" class="form__control">
+                        </div>
+
+                        <div class="form__group">
+                            <label for="numero" class="form__label">Número</label>
+                            <input type="text" id="numero" class="form__control">
+                        </div>
+
+                        <div class="form__group">
+                            <label for="complemento" class="form__label">Complemento</label>
+                            <input type="text" id="complemento" class="form__control">
+                        </div>
+
+                        <div class="form__group">
+                            <label for="bairro" class="form__label">Bairro</label>
+                            <input type="text" id="bairro" class="form__control">
+                        </div>
+
+                        <div class="form__group">
+                            <label for="cidade" class="form__label">Cidade</label>
+                            <input type="text" id="cidade" class="form__control">
+                        </div>
+
+                        <div class="form__group">
+                            <label for="estado" class="form__label">Estado</label>
+                            <input type="text" id="estado" class="form__control">
+                        </div>
+                    </div>
+                </fieldset>
+
+                <!--Filiação-->
+                <fieldset class="form__section">
+                    <legend class="form__legend">Dados de Filiação</legend>
+
+                    <div class="form__grid">
+
+                        <div class="form__group">
+                            <label for="dataFiliacao" class="form__label">Data de Filiação</label>
+                            <input type="date" id="dataFiliacao" class="form__control" required>
+                        </div>
+
+                    </div>
+                </fieldset>
+
+                <!--Prazo-->
+                <fieldset class="form__section">
+                    <legend class="form__legend">Prazo para Regularização</legend>
+
+                    <div class="form__grid">
+
+                        <div class="form__group">
+                            <label for="prazo" class="form__label">Prazo (dias)</label>
+                            <input type="number" id="prazo" class="form__control" value="10" min="1">
+                        </div>
+
+                    </div>
+                </fieldset>
+
+                <fieldset class="form__section">
+                    <legend class="form__legend">Competências em Atraso</legend>
+
+                    <div class="form__grid">
+
+                        <div class="form__group form__group--full">
+                            <label class="form__label">
+                                <input type="checkbox" id="anoCompleto">
+                                Adicionar ano completo
+                            </label>
+                        </div>
+
+                        <div class="form__group">
+                            <label for="mesCompetencia" class="form__label">Mês</label>
+                            <select id="mesCompetencia" class="form__control">
+                                <option value="1">Janeiro</option>
+                                <option value="2">Fevereiro</option>
+                                <option value="3">Março</option>
+                                <option value="4">Abril</option>
+                                <option value="5">Maio</option>
+                                <option value="6">Junho</option>
+                                <option value="7">Julho</option>
+                                <option value="8">Agosto</option>
+                                <option value="9">Setembro</option>
+                                <option value="10">Outubro</option>
+                                <option value="11">Novembro</option>
+                                <option value="12">Dezembro</option>
+                            </select>
+                        </div>
+
+                        <div class="form__group">
+                            <label for="anoCompetencia" class="form__label">Ano</label>
+                            <input type="number" id="anoCompetencia" class="form__control" value="2026" min="2007">
+                        </div>
+
+                        <div class="form__group form__group--full">
+                            <button type="button" id="btnAdicionarCompetencia" class="button">
+                                Adicionar
+                            </button>
+
+                            <button type="button" id="btnLimparCompetencias" class="button button--danger">
+                                Limpar lista
+                            </button>
+                        </div>
+
+                        <div class="form__group form__group--full">
+                            <div id="listaCompetencias" class="lista-competencias"></div>
+                        </div>
+
+                        <div class="form__group form__group--full">
+                            <label for="valorTotal" class="form__label">Valor Total Atualizado (R$)</label>
+                            <input type="number" id="valorTotal" step="0.01" class="form__control">
+                        </div>
+
+                        <div class="form__group form__group--full form__actions">
+                            <button type="button" id="btnGerarDocumento" class="button button--primary">
+                                Gerar Notificação
+                            </button>
+                        </div>
+
+                    </div>
+                </fieldset>
+            </form>
+
+            <button type="button" id="btnImprimir" class="button        button--secondary" style="display: none;">
+                Imprimir
+            </button>
+           
+            <div id="visualizacaoDocumento"></div>
+            
+        </div>
+    </main>
+
+    <script src="js/main.js"></script>
+
+</body>
+</html>
