@@ -49,67 +49,156 @@ const listaCompetencias = document.getElementById("listaCompetencias");
 
 btnAdicionar.addEventListener("click", function() {
 
-    const mes = document.getElementById("mesCompetencia").value
-    const ano = document.getElementById("anoCompetencia").value
-    const anoCompleto = document.getElementById("anoCompleto").checked
+    const ano = Number(document.getElementById("anoCompetencia").value);
+    const valorBase = Number(document.getElementById("valorMensalidade").value);
 
-    if (!ano) return
+    if (!ano || !valorBase) return;
 
-    if (anoCompleto) {
+    const tabelaContainer = document.getElementById("tabelaContainer");
 
-        // adiciona os 12 meses
-        for (let i = 1; i <= 12; i++) {
+    function calcularValorAtualizado(mes, ano) {
 
-            // evita duplicação
-            const jaExiste = competenciasEmAtraso.some(item =>
-                item.mes === i && item.ano === Number(ano)
-            )
+        const hoje = new Date();
+        const vencimento = new Date(ano, mes - 1, 10);
 
-            if (!jaExiste) {
-                competenciasEmAtraso.push({
-                    mes: i,
-                    ano: Number(ano)
-                })
-            }
-        }
+        if (hoje <= vencimento) return valorBase;
 
-    } else {
+        let mesesAtraso =
+            (hoje.getFullYear() - vencimento.getFullYear()) * 12 +
+            (hoje.getMonth() - vencimento.getMonth());
 
-        if (!mes) return
+        if (hoje.getDate() < 10) mesesAtraso--;
+
+        if (mesesAtraso < 0) mesesAtraso = 0;
+
+        const multa = valorBase * 0.02;
+        const juros = valorBase * 0.01 * mesesAtraso;
+
+        return valorBase + multa + juros;
+    }
+
+    let tabela = `
+            <table class="tabela-meses">
+            <thead>
+                <tr>
+                    <th>
+                        <input type="checkbox" id="checkTodosMeses">
+                    </th>
+                    <th>Mês</th>
+                    <th>Valor Atualizado</th>
+                </tr>
+            </thead>
+            <tbody>
+    `;
+
+    for (let i = 1; i <= 12; i++) {
+
+        const valorAtualizado = calcularValorAtualizado(i, ano);
+
+        tabela += `
+            <tr>
+                <td>
+                    <input type="checkbox"
+                           class="mesCheck"
+                           data-mes="${i}"
+                           data-ano="${ano}"
+                           data-valor="${valorAtualizado}">
+                </td>
+                <td>${nomeMes(i)}</td>
+                <td>R$ ${valorAtualizado.toFixed(2)}</td>
+            </tr>
+        `;
+    }
+
+    tabela += `
+            </tbody>
+        </table>
+    `;
+
+    tabelaContainer.innerHTML = tabela;
+
+    const checkTodos = document.getElementById("checkTodosMeses");
+
+    checkTodos.addEventListener("change", function () {
+
+    const todosMeses = document.querySelectorAll(".mesCheck");
+
+    todosMeses.forEach(cb => {
+        cb.checked = this.checked;
+    });
+
+});
+});
+
+
+//Btn função gravar
+const btnGravar = document.getElementById("btnGravar");
+
+btnGravar.addEventListener("click", function() {
+
+    const checkboxes = document.querySelectorAll(".mesCheck:checked");
+
+    checkboxes.forEach(cb => {
+
+        const mes = Number(cb.dataset.mes);
+        const ano = Number(cb.dataset.ano);
+        const valor = Number(cb.dataset.valor);
 
         const jaExiste = competenciasEmAtraso.some(item =>
-            item.mes === Number(mes) && item.ano === Number(ano)
-        )
+            item.mes === mes && item.ano === ano
+        );
 
         if (!jaExiste) {
             competenciasEmAtraso.push({
-                mes: Number(mes),
-                ano: Number(ano)
-            })
+                mes: mes,
+                ano: ano,
+                valor: valor
+            });
         }
-    }
+    });
 
-    renderizarCompetencias()
+    renderizarCompetencias();
+    atualizarValorTotal();
 });
 
 
 function renderizarCompetencias() {
-    listaCompetencias.innerHTML = ""
+
+    listaCompetencias.innerHTML = "";
 
     competenciasEmAtraso.forEach((item, index) => {
 
-        const div = document.createElement("div")
-        div.classList.add("competencia-item")
+        const div = document.createElement("div");
+        div.classList.add("competencia-item");
 
         div.innerHTML = `
-            ${nomeMes(item.mes)} / ${item.ano}
+            ${nomeMes(item.mes)} / ${item.ano} 
+            - R$ ${item.valor.toFixed(2)}
             <button type="button" onclick="removerCompetencia(${index})">
                 Remover
             </button>
-        `
+        `;
 
         listaCompetencias.appendChild(div);
-    })
+    });
+
+     // 🔹 Controle do toggle FORA do loop
+    const toggleContainer = document.getElementById("toggleListaContainer");
+    const toggleLista = document.getElementById("toggleLista");
+
+    if (competenciasEmAtraso.length > 0) {
+
+        toggleContainer.style.display = "block";
+
+        toggleLista.checked = false;
+        listaCompetencias.style.display = "none";
+
+    } else {
+
+        toggleContainer.style.display = "none";
+        listaCompetencias.style.display = "none";
+
+    }
 }
 
 function nomeMes(numero) {
@@ -123,6 +212,7 @@ function nomeMes(numero) {
 function removerCompetencia(index) {
     competenciasEmAtraso.splice(index, 1);
     renderizarCompetencias();
+    atualizarValorTotal();
 }
 
 function ordenarCompetencias(lista) {
@@ -169,6 +259,22 @@ function agruparSequencias(meses) {
     return resultado
 }
 
+
+function formatarLista(lista) {
+    if (!lista || lista.length === 0) return "";
+
+    if (lista.length === 1) {
+        return lista[0];
+    }
+
+    if (lista.length === 2) {
+        return lista[0] + " e " + lista[1];
+    }
+
+    return lista.slice(0, -1).join(", ") + " e " + lista[lista.length - 1];
+}
+
+
 function montarTextoCompetencias() {
 
     if (competenciasEmAtraso.length === 0) return ""
@@ -190,9 +296,8 @@ function montarTextoCompetencias() {
             }
         })
 
-        partes.push(`${textoMeses.join(", ")} de ${ano}`)
-    })
-
+        partes.push(`${formatarLista(textoMeses)} de ${ano}`)
+    });
     return partes.join(", ")
 }
 
@@ -414,6 +519,7 @@ function gerarNotificacao(dados) {
 
 /* Botão gerar notificação*/
 btnGerar.addEventListener("click", function() {
+
     const dados = coletarDadosFormulario();
     const html = gerarNotificacao(dados);
 
@@ -471,4 +577,57 @@ const formatarNome = (str) => {
     ).join(' ');
 };
 
+function atualizarValorTotal() {
 
+    const total = competenciasEmAtraso.reduce((soma, item) => {
+        return soma + (item.valor || 0);
+    }, 0);
+
+    document.getElementById("valorTotal").value = total.toFixed(2);
+}
+
+//Botão nova notificação
+const btnNovaNotificacao = document.getElementById("btnNovaNotificacao");
+
+btnNovaNotificacao.addEventListener("click", function() {
+
+    // Limpa formulário
+    document.querySelector("form").reset();
+
+    // Limpa array
+    competenciasEmAtraso = [];
+
+    // Limpa lista visual
+    renderizarCompetencias();
+
+    // Zera valor total
+    atualizarValorTotal();
+
+    // Limpa documento gerado
+    document.getElementById("visualizacaoDocumento").innerHTML = "";
+
+    // Esconde botão imprimir
+    document.getElementById("btnImprimir").style.display = "none";
+
+    document.getElementById("tabelaContainer").innerHTML = "";
+
+    document.getElementById("toggleListaContainer").style.display = "none";
+
+    window.scrollTo({
+        top: 0,
+        behavior: "smooth"
+    });
+});
+
+//Ocultar lista
+const toggleLista = document.getElementById("toggleLista");
+
+toggleLista.addEventListener("change", function () {
+
+    if (this.checked) {
+        listaCompetencias.style.display = "block";
+    } else {
+        listaCompetencias.style.display = "none";
+    }
+
+});
