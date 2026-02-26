@@ -119,34 +119,21 @@
 
                     <div class="form__grid">
 
-                        <div class="form__group form__group--full">
-                            <label class="form__label">
-                                <input type="checkbox" id="anoCompleto">
-                                Adicionar ano completo
-                            </label>
-                        </div>
-
-                        <div class="form__group">
-                            <label for="mesCompetencia" class="form__label">Mês</label>
-                            <select id="mesCompetencia" class="form__control">
-                                <option value="1">Janeiro</option>
-                                <option value="2">Fevereiro</option>
-                                <option value="3">Março</option>
-                                <option value="4">Abril</option>
-                                <option value="5">Maio</option>
-                                <option value="6">Junho</option>
-                                <option value="7">Julho</option>
-                                <option value="8">Agosto</option>
-                                <option value="9">Setembro</option>
-                                <option value="10">Outubro</option>
-                                <option value="11">Novembro</option>
-                                <option value="12">Dezembro</option>
-                            </select>
-                        </div>
+                       
 
                         <div class="form__group">
                             <label for="anoCompetencia" class="form__label">Ano</label>
                             <input type="number" id="anoCompetencia" class="form__control" value="2026" min="2007">
+                        </div>
+
+                        <div class="form__group">
+                            <label for="valorMensalidade" class="form__label">
+                                Valor da Mensalidade (R$)
+                            </label>
+                            <input type="number"
+                                id="valorMensalidade"
+                                step="0.01"
+                                class="form__control">
                         </div>
 
                         <div class="form__group form__group--full">
@@ -159,7 +146,20 @@
                             </button>
                         </div>
 
+                        <div id="tabelaContainer"></div>
+
+                        <button type="button" id="btnGravar" class="button button--primary">
+                            Gravar Meses Selecionados
+                        </button>
+
                         <div class="form__group form__group--full">
+                            <div id="toggleListaContainer" style="display: none;">
+                                <label>
+                                    <input type="checkbox" id="toggleLista">
+                                    Mostrar lista de competências adicionadas
+                                </label>
+                            </div>
+
                             <div id="listaCompetencias" class="lista-competencias"></div>
                         </div>
 
@@ -172,15 +172,19 @@
                             <button type="button" id="btnGerarDocumento" class="button button--primary">
                                 Gerar Notificação
                             </button>
+
+                            <button type="button" id="btnImprimir" class="button button--secondary" style="display: none;">
+                                Imprimir
+                            </button>
+
+                            <button type="button" id="btnNovaNotificacao" class="button button--primary">
+                                Nova Notificação
+                            </button>
                         </div>
 
                     </div>
                 </fieldset>
             </form>
-
-            <button type="button" id="btnImprimir" class="button        button--secondary" style="display: none;">
-                Imprimir
-            </button>
            
             <div id="visualizacaoDocumento"></div>
             
