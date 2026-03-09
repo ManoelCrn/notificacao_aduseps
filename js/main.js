@@ -67,7 +67,7 @@ btnAdicionar.addEventListener("click", function() {
             (hoje.getFullYear() - vencimento.getFullYear()) * 12 +
             (hoje.getMonth() - vencimento.getMonth());
 
-        if (hoje.getDate() < 10) mesesAtraso--;
+        /*if (hoje.getDate() < 10) mesesAtraso--;*/
 
         if (mesesAtraso < 0) mesesAtraso = 0;
 
